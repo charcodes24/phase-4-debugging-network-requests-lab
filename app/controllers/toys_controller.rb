@@ -1,5 +1,5 @@
 class ToysController < ApplicationController
-  wrap_parameters format: []
+  wrap_parameters false
 
   def index
     toys = Toy.all
@@ -7,8 +7,11 @@ class ToysController < ApplicationController
   end
 
   def create
-    toy = Toys.create(toy_params)
+    toy = Toy.create!(toy_params)
     render json: toy, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+    byebug
   end
 
   def update
